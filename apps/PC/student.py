@@ -1,17 +1,30 @@
+from enum import EnumMeta
+
 from PyQt6.QtWidgets import QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QApplication, QStackedLayout, \
     QStackedWidget, QFormLayout, QLineEdit, QSpinBox, QComboBox
-import sys
+from prometheus_client import Enum
+from win32ctypes.pywin32.pywintypes import datetime
+
 import utils.camera as camera
 from ml_model.face import fast_insighface
 from py_model import student
+from typing import Callable
+import utils.data_students as data_students
+from py_model.session import Session, Mood, Self_Assessment
+import config
 
 class StudentWindow(QMainWindow):
-    def __init__(self, student):
+    def __init__(self, student, allow_camera: bool = False):
         super().__init__()
-        self.student = student
+        self.student = data_students.load(config.save_file_name)
+        self.session = None
+        self.allow_camera = allow_camera
         self.initUI()
 
-        self.message_show("Benefit Harm", "Жду не дождусь", "Начать")
+        if self.student is None:
+            self.show_message("Я Benefit Harm", "Давай познакомимся !", "Начать", self.begin_register)
+        else:
+            self.show_message("Benefit Harm", "Давно не виделись !", "Начать", self.begin_session)
 
     def initUI(self):
         """
@@ -31,9 +44,6 @@ class StudentWindow(QMainWindow):
         # styles
         self.message_label.setStyleSheet("font-size:20px;")
         self.message_button.setStyleSheet("font-size:20px;")
-
-        # actions
-        self.message_button.clicked.connect(self.begin_session)
 
         # boxes
         vbox = QVBoxLayout(self)
@@ -71,7 +81,9 @@ class StudentWindow(QMainWindow):
         self.stacked_widget.addWidget(screen_begin)
         self.stacked_widget.addWidget(screen_form)
 
-    def message_show(self, label: str, message: str, button_label: str) -> None:
+    """МЕТОДЫ ДЛЯ РАБОТЫ С ЭКРАНАМИ ОКНА"""
+
+    def show_message(self, label: str, message: str, button_label: str, action: Callable) -> None:
         """
         For show one message
         :param label: big label
@@ -79,43 +91,173 @@ class StudentWindow(QMainWindow):
         :param button_label: text in button
         :return: None
         """
-        self.stacked_widget.setCurrentIndex(0)
+        assert isinstance(label, str), "Неверный тип 1 параметра метода"
+        assert isinstance(message, str), "Неверный тип 2 параметра метода"
+        assert isinstance(button_label, str), "Неверный тип 3 параметра метода"
+        assert isinstance(action, Callable), "Неверный тип 4 параметра метода"
+
+        # action
+        self.disconnect_clicked_button(self.message_button)
+        self.message_button.clicked.connect(action)
+
+        # ui
         self.message_label.setText(label)
         self.message_text.setText(message)
         self.message_button.setText(button_label)
 
-    def begin_session(self):
+        self.stacked_widget.setCurrentIndex(0)
+
+    def show_form(self, label: str, questions: dict, action: Callable) -> None:
+        """
+        вызов экрана заполнения формы вопросов
+        :param label: главная надпись
+        :param questions: вопросы в словаре, ключи - это вопрос, значения - ответы
+            str - пустая строка
+            int - число
+            list - выбор значения из списка
+        ":param action: функция вызываемая при отправке формы и принимающая аргумент словаря
+        :return: пусто
+        """
+        assert isinstance(label, str), "Неверный тип 1 параметра метода"
+        assert isinstance(questions, dict), "Неверный тип 2 параметра метода"
+        for key, value in questions.items():
+            assert isinstance(key, str), f"Неверный ключ >{key}< = {value} в словаре 2 параметра метода form_show()"
+            assert isinstance(value, (str, int, list, EnumMeta)), f"Неверное значение {key} = >{value}< в словаря метода form_show()"
+            if isinstance(value, list):
+                for s in value:
+                    assert isinstance(s, str), f"Неверный тип переменной в списке, должна быть строкой {key} = >{value}<"
+        assert isinstance(action, Callable), "Неверный тип 4 параметра метода"
+
+        # connect action
+        self.disconnect_clicked_button(self.form_button)
+        def event_action():
+            answers = dict()
+            for i, key in enumerate(questions.keys()):
+                widget = self.form_layout.itemAt(i, QFormLayout.ItemRole.FieldRole).widget()
+                answer = None
+                if type(widget) == QLineEdit:
+                    answer = widget.text()
+                elif type(widget) == QComboBox:
+                    answer = widget.currentText()
+                elif type(widget) == QSpinBox:
+                    answer = widget.value()
+                answers.setdefault(key, answer)
+            while self.form_layout.rowCount() > 0:
+                self.form_layout.removeRow(0)
+            action(answers)
+        self.form_button.clicked.connect(event_action)
+
+        # UI
+        self.form_label.setText(label)
+        for text, answer_type in questions.items():
+            object_answer = None
+            if type(answer_type) == str:
+                object_answer = QLineEdit(text = answer_type)
+            elif type(answer_type) == list:
+                object_answer = QComboBox()
+                for objs in answer_type:
+                    object_answer.addItem(objs)
+            elif type(answer_type) == int:
+                object_answer = QSpinBox(value = answer_type)
+            elif isinstance(answer_type, EnumMeta):
+                object_answer = QComboBox()
+                for enum in answer_type:
+                    object_answer.addItem(str(enum.value))
+            self.form_layout.addRow(text, object_answer)
+
+        self.stacked_widget.setCurrentIndex(1)
+
+    """МЕТОДЫ ДЛЯ РАБОТЫ С СЕССИЕЙ"""
+
+    def begin_register(self):
         """
         method for begin registration new user
         create form data
         :return: None
         """
         # model predict by fice
-        camera.snapshot("apps/PC/data/face_image_for_session.png")
-        is_male, age = fast_insighface.analyze_face("apps/PC/data/face_image_for_session.png")
+        assert not self.student is None, "Объект student должен существовать"
+        assert self.student.name == None, "Объект student должен иметь Name None"
+        assert self.student.age == None, "Объект student должен иметь age None"
+        assert self.student.is_male == None, "Объект student должен иметь is_male None"
+
+        # AI predict
+        is_male, age = True, 0
+        if self.allow_camera:
+            camera.snapshot("apps/PC/data/face_image_for_session.png")
+            is_male, age = fast_insighface.analyze_face("apps/PC/data/face_image_for_session.png")
 
         # UI
-        st = self.student
-        cb_male = QComboBox()
-        cb_male.addItem("Мужской")
-        cb_male.addItem("Женский")
-        self.form_label.setText("Заполните начальные данные")
-        self.form_layout.addRow("Имя", QLineEdit())
-        self.form_layout.addRow("Возраст", QSpinBox(value = age))
-        self.form_layout.addRow("Пол", cb_male)
-        self.form_button.clicked.connect(self.register)
-        self.stacked_widget.setCurrentIndex(1)
+        list_male = ["Мужчина", "Женщина"]
+        if not is_male:
+            list_male = list_male[::-1]
+        self.show_form("Кто же вы?", {
+            "Имя": "",
+            "Возраст": age,
+            "Пол": list_male
+        }, self.end_register)
 
-    def register(self):
+    def end_register(self, data: dict):
         """
         method for end registration new user
         read form data
         :return: None
         """
-        student.name = self.form_layout.itemAt(0).widget().text()
-        self.message_text.setText(f"Добро пожаловать {self.student.name}", "", "Готово")
+        assert not self.student is None, "Объект student должен существовать"
+        assert self.student.name == None, "Объект student должен иметь Name None"
+        assert self.student.age == None, "Объект student должен иметь age None"
+        assert self.student.is_male == None, "Объект student должен иметь is_male None"
+        assert isinstance(data, dict)
+
+        # write data
+        self.student.name = data["Имя"]
+        self.student.age = data["Возраст"]
+        self.student.is_male = data["Пол"] == "Мужской"
+        data_students.save(self.student, config.save_file_name)
+
+        # UI
+        self.show_message(f"Добро пожаловать {self.student.name}", "", "Готово", self.begin_session)
+
+    def begin_session(self):
+        assert not self.student is None and self.session is None, "Состояние переменных не верно, возможно вы вызвали не подходящий метод begin_session()"
+
+        self.session = Session()
+        self.student.sessions.append(self.session)
+
+        self.show_form("Как вы ?", {
+            "Настроение": Mood,
+            self.student.name: Self_Assessment
+        }, self.continue_session)
+
+    def continue_session(self, data: dict):
+        assert not self.student is None and not self.session is None, "Состояние переменных не верно, возможно вы вызвали не подходящий метод continue_session()"
+        assert self.session.mood is None and self.session.time is None and self.session.self_assessment is None, "Атрибуты сеанса при вызоре этого метода должны быть пусты"
+        assert isinstance(data, dict), "Неверный аргумент data, возможно вы не использовали show_form()"
+
+        self.session.mood = Mood(data["Настроение"])
+        self.session.time = datetime.now()
+        self.session.self_assessment = Self_Assessment(data[self.student.name])
+        data_students.save(self.student, config.save_file_name)
+
+        self.show_message("Хорош", "Молодец", "Выйти", self.close)
+
+    """СЛУЖЕБНЫЕ МЕТОДЫ"""
+
+    def disconnect_clicked_button(self, button: QPushButton):
+        """Отключение всех action с кнопки"""
+        try:
+            button.clicked.disconnect()
+        except TypeError:
+            pass
 
 if __name__ == "__main__":
+    import sys
+    import traceback
+    def exception_hook(exc_type, exc_value, exc_tb):
+        traceback.print_exception(exc_type, exc_value, exc_tb)
+        sys.exit(1)
+    sys.excepthook = exception_hook
+
     from py_model.student import Student
     app = QApplication(sys.argv)
     window = StudentWindow(Student(None, None, None))
