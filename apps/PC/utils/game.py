@@ -30,7 +30,6 @@ fpsClock=pygame.time.Clock()
 fps = 60
 pygame.init()
 
-
 """ИГРОВЫЕ ОБЪЕКТЫ"""
 # игрок
 player = GameObject(200, 200)
