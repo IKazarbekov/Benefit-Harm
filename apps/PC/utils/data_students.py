@@ -19,10 +19,21 @@ def save(student, file_name):
     with open(file_name, "w", encoding="utf-8") as f:
         json.dump(student, f, cls=EnumEncoder, indent=4, ensure_ascii=False)
 
-def load(file_name):
+def load_one_student(file_name):
     if not os.path.exists(file_name):
         return None
     with open(file_name, "r", encoding="utf-8") as f:
         data = json.load(f)
     student = Student(**data)
     return student
+
+def load_more_student(file_name):
+    if not os.path.exists(file_name):
+        return None
+    with open(file_name, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    students = []
+    for item in data:
+        student = Student(**item)
+        students.append(student)
+    return students

@@ -16,7 +16,7 @@ import config
 class StudentWindow(QMainWindow):
     def __init__(self, student, allow_camera: bool = False):
         super().__init__()
-        self.student = data_students.load(config.save_file_name)
+        self.student = data_students.load_one_student(config.ONE_STUDENT)
         self.session = None
         self.allow_camera = allow_camera
         self.initUI()
@@ -213,7 +213,7 @@ class StudentWindow(QMainWindow):
         self.student.name = data["Имя"]
         self.student.age = data["Возраст"]
         self.student.is_male = data["Пол"] == "Мужской"
-        data_students.save(self.student, config.save_file_name)
+        data_students.save(self.student, config.ONE_STUDENT)
 
         # UI
         self.show_message(f"Добро пожаловать {self.student.name}", "", "Готово", self.begin_session)
@@ -237,7 +237,7 @@ class StudentWindow(QMainWindow):
         self.session.mood = Mood(data["Настроение"])
         self.session.time = datetime.now()
         self.session.self_assessment = Self_Assessment(data[self.student.name])
-        data_students.save(self.student, config.save_file_name)
+        data_students.save(self.student, config.ONE_STUDENT)
 
         self.show_message("Хорош", "Молодец", "Выйти", self.close)
 

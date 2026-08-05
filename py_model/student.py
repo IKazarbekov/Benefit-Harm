@@ -9,5 +9,6 @@ class Student:
     name: str
     age: int
     is_male: bool
+    class_: str = None
 
     sessions: List[Session] = field(default_factory=list)

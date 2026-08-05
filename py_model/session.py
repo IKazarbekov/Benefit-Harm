@@ -15,8 +15,12 @@ class Self_Assessment(Enum):
     LOW = "Плохой"
     VERY_LOW = "Ужасный"
 
+class Modul(Enum):
+    ERROR = "Ошибка"
+
 @dataclass
 class Session:
     mood: Mood = None
     time: datetime = None
     self_assessment: Self_Assessment = None
+    modul: Modul = None
