@@ -9,18 +9,19 @@ import utils.camera as camera
 from ml_model.face import fast_insighface
 from py_model import student
 from typing import Callable
-import utils.data_students as data_students
 from py_model.session import Session, Mood, Self_Assessment
 import config
 
 class StudentWindow(QMainWindow):
     def __init__(self, student, allow_camera: bool = False):
-        super().__init__()
-        self.student = data_students.load_one_student(config.ONE_STUDENT)
+        # data
+        self.student = student
         self.session = None
         self.allow_camera = allow_camera
-        self.initUI()
 
+        # UI
+        super().__init__()
+        self.initUI()
         if self.student is None:
             self.show_message("Я Benefit Harm", "Давай познакомимся !", "Начать", self.begin_register)
         else:
@@ -31,8 +32,9 @@ class StudentWindow(QMainWindow):
         initialization UI
         :return: None
         """
+
+        # region SCREEN TITLE
         """
-        SCREEN TITLE
         one title and one button
         message_show() - for call screen title
         """
@@ -50,9 +52,10 @@ class StudentWindow(QMainWindow):
         vbox.addWidget(self.message_label)
         vbox.addWidget(self.message_text)
         vbox.addWidget(self.message_button)
+        # endregion
 
+        # region SCREEN FORM
         """
-        SCREEN FORM
         many questions
         """
         #widgets
@@ -65,10 +68,9 @@ class StudentWindow(QMainWindow):
         self.form_vbox.addWidget(self.form_label)
         self.form_vbox.addLayout(self.form_layout)
         self.form_vbox.addWidget(self.form_button)
+        # endregion
 
-        """
-        CONTAINERS
-        """
+        # region CONTAINERS
         # screens
         screen_begin = QWidget()
         screen_form = QWidget()
@@ -80,6 +82,7 @@ class StudentWindow(QMainWindow):
         self.setCentralWidget(self.stacked_widget)
         self.stacked_widget.addWidget(screen_begin)
         self.stacked_widget.addWidget(screen_form)
+        # endregion
 
     """МЕТОДЫ ДЛЯ РАБОТЫ С ЭКРАНАМИ ОКНА"""
 
@@ -185,7 +188,7 @@ class StudentWindow(QMainWindow):
         is_male, age = True, 0
         if self.allow_camera:
             camera.snapshot("apps/PC/data/face_image_for_session.png")
-            is_male, age = fast_insighface.analyze_face("apps/PC/data/face_image_for_session.png")
+            is_male, age = fast_insighface.analyze_face_male_age_by_file("apps/PC/data/face_image_for_session.png")
 
         # UI
         list_male = ["Мужчина", "Женщина"]
@@ -213,7 +216,6 @@ class StudentWindow(QMainWindow):
         self.student.name = data["Имя"]
         self.student.age = data["Возраст"]
         self.student.is_male = data["Пол"] == "Мужской"
-        data_students.save(self.student, config.ONE_STUDENT)
 
         # UI
         self.show_message(f"Добро пожаловать {self.student.name}", "", "Готово", self.begin_session)
@@ -237,7 +239,6 @@ class StudentWindow(QMainWindow):
         self.session.mood = Mood(data["Настроение"])
         self.session.time = datetime.now()
         self.session.self_assessment = Self_Assessment(data[self.student.name])
-        data_students.save(self.student, config.ONE_STUDENT)
 
         self.show_message("Хорош", "Молодец", "Выйти", self.close)
 

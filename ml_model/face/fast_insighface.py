@@ -1,7 +1,7 @@
 from insightface.app import FaceAnalysis
 import cv2, os
 
-def analyze_face(img: str):
+def analyze_face_male_age_by_file(img: str):
     """
     read image and detect male, age by face
     :param img: path to image

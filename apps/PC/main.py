@@ -2,7 +2,8 @@ import sys
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel, QTabWidget, \
-    QStackedWidget, QStackedLayout, QFormLayout, QLineEdit, QSpinBox, QComboBox, QTableWidget, QTableWidgetItem
+    QStackedWidget, QStackedLayout, QFormLayout, QLineEdit, QSpinBox, QComboBox, QTableWidget, QTableWidgetItem, \
+    QHBoxLayout
 
 from student import StudentWindow
 from py_model.student import Student
@@ -10,12 +11,10 @@ from py_model.student import Student
 import utils.data_students as data_students
 import config
 
-
 class StartWindow(QMainWindow):
     def __init__(self):
         # Data
         self.students = data_students.load_more_student(config.FILE_ALL_STUDENTS)
-
         # UI
         super().__init__()
         self.setWindowTitle("Benefit Harm Launcher 0.0.1")
@@ -29,7 +28,7 @@ class StartWindow(QMainWindow):
         button_student = QPushButton("Ученик", self)
         button_teacher = QPushButton("Учитель", self)
 
-        button_student.clicked.connect(self.new_user_action)
+        button_student.clicked.connect(self.session_start_action)
         button_teacher.clicked.connect(lambda : self.stacked.setCurrentIndex(1))
 
         main_vbox = QVBoxLayout(self)
@@ -40,13 +39,16 @@ class StartWindow(QMainWindow):
 
         # region Teacher room
         teacher_label = QLabel("Кабинет учителя")
+        teacher_label_table = QLabel("Ученики:")
         self.teacher_table = QTableWidget()
         self.teacher_table.setColumnCount(4)
+        self.teacher_table.setHorizontalHeaderLabels(["Имя", "Последний сеанс", "Сеанс"])
         teacher_button_add_student = QPushButton("Добавить ученика", self)
         teacher_button_add_student.clicked.connect(lambda : self.stacked.setCurrentIndex(2))
 
         teacher_vbox = QVBoxLayout()
         teacher_vbox.addWidget(teacher_label)
+        teacher_vbox.addWidget(teacher_label_table)
         teacher_vbox.addWidget(self.teacher_table)
         teacher_vbox.addWidget(teacher_button_add_student)
 
@@ -95,23 +97,49 @@ class StartWindow(QMainWindow):
         self.setStyleSheet("font-size:20px;")
         # endregion
 
+    def closeEvent(self, event):
+        data_students.save(self.students, config.FILE_ALL_STUDENTS)
+
     def update_table_students(self):
+        """
+        update student table self.teacher_table: QTableWidget
+        :return: None
+        """
         students = self.students
 
         self.teacher_table.setRowCount(len(students))
         for i, student in enumerate(students):
-            self.teacher_table.setCellWidget(i, 0, QLabel(student.name))
-            self.teacher_table.setCellWidget(i, 1, QSpinBox(value=student.age))
-            self.teacher_table.setCellWidget(i, 2, QLabel("" + student.is_male))
-            self.teacher_table.setCellWidget(i, 3, QPushButton("Начать сеанс"))
 
-    def new_user_action(self):
-        student = Student(None, None, None)
+            def begin_session():
+                self.session_start_action(student)
+
+            button = QPushButton("начать")
+            button.clicked.connect(begin_session)
+            str_last_time = "Не было"
+            if len(student.sessions) > 0:
+                str_last_time = student.sessions[-1].time.strftime("%Y-%m-%d %H:%M:%S")
+            label_last_session = QLabel(str_last_time)
+
+            self.teacher_table.setCellWidget(i, 0, QLabel(student.name))
+            self.teacher_table.setCellWidget(i, 1, label_last_session)
+            self.teacher_table.setCellWidget(i, 2, button)
+
+    def session_start_action(self, student = Student(None, None, None)):
+        """
+        :param student: student, which play session
+        :return: None
+        """
         self.window_student = StudentWindow(student)
         self.window_student.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.window_student.show()
 
     def add_student_action(self):
+        """
+        Add new student in list - self.students, from screen addendum_student
+        :return: None
+        """
+        assert self.stacked.currentIndex() == 2
+
         name = self.addendum_student_name.text()
         age = self.addendum_student_sp.value()
         male = self.addendum_student_cb.currentText()

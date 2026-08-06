@@ -5,8 +5,10 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/apps/PC" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/.venv10" />
+      <excludeFolder url="file://$MODULE_DIR$/.venv13" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.14 (Benefit Harm)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (Benefit Harm)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

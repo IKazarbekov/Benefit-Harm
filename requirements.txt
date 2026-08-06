@@ -1,7 +1,11 @@
-pyqt6:6.11.0
-notebook:7:6:1
-opencv-python:5.0.0.93
-pyinstaller:6.21.0
-insightface:1.0.1
-onnxruntime:1.28.0
-pygame-ce:2.5.7
+#python 3.13.9
+pyqt6
+notebook
+opencv-python
+pyinstaller
+insightface
+onnxruntime
+pygame-ce
+
+deepface==0.0.100
+tf-keras

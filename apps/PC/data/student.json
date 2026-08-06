@@ -1,0 +1,29 @@
+{
+    "name": "",
+    "age": 0,
+    "is_male": false,
+    "class_": null,
+    "sessions": [
+        {
+            "mood": "Радость",
+            "time": "2026-08-02T07:49:51.680252",
+            "self_assessment": "Лучше всех"
+        },
+        {
+            "mood": "Гнев",
+            "time": "2026-08-02T07:56:21.933680",
+            "self_assessment": "Плохой"
+        },
+        {
+            "mood": "Радость",
+            "time": "2026-08-04T08:56:46.732941",
+            "self_assessment": "Лучше всех"
+        },
+        {
+            "mood": "Радость",
+            "time": "2026-08-05T10:48:41.566046",
+            "self_assessment": "Лучше всех",
+            "modul": null
+        }
+    ]
+}
