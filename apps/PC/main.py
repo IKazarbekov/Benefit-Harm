@@ -42,7 +42,8 @@ class StartWindow(QMainWindow):
         teacher_label_table = QLabel("Ученики:")
         self.teacher_table = QTableWidget()
         self.teacher_table.setColumnCount(4)
-        self.teacher_table.setHorizontalHeaderLabels(["Имя", "Последний сеанс", "Сеанс"])
+        self.teacher_table.setHorizontalHeaderLabels(["Имя", "Класс",  "Последний сеанс", "Сеанс"])
+        self.teacher_table.setColumnWidth(2, 160)
         teacher_button_add_student = QPushButton("Добавить ученика", self)
         teacher_button_add_student.clicked.connect(lambda : self.stacked.setCurrentIndex(2))
 
@@ -117,12 +118,15 @@ class StartWindow(QMainWindow):
             button.clicked.connect(begin_session)
             str_last_time = "Не было"
             if len(student.sessions) > 0:
-                str_last_time = student.sessions[-1].time.strftime("%Y-%m-%d %H:%M:%S")
+                str_last_time = student.sessions[-1].time.strftime("%Y.%m.%d %H:%M")
             label_last_session = QLabel(str_last_time)
 
             self.teacher_table.setCellWidget(i, 0, QLabel(student.name))
-            self.teacher_table.setCellWidget(i, 1, label_last_session)
-            self.teacher_table.setCellWidget(i, 2, button)
+            self.teacher_table.setCellWidget(i, 1, QLabel(student.class_))
+            self.teacher_table.setCellWidget(i, 2, label_last_session)
+            self.teacher_table.setCellWidget(i, 3, button)
+
+
 
     def session_start_action(self, student = Student(None, None, None)):
         """
