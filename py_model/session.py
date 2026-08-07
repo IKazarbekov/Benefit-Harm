@@ -1,12 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
-
-class Mood(Enum):
-    JOY = "Радость"
-    ANGER = "Гнев"
-    SADNESS = "Печаль"
-    GOOD = "Спокойный"
+from typing import List
+from py_model.mood import Mood
 
 class Self_Assessment(Enum):
     VERY_HIGH = "Лучше всех"
@@ -24,3 +20,4 @@ class Session:
     time: datetime = None
     self_assessment: Self_Assessment = None
     modul: Modul = None
+    snapshots: List = field(default_factory=list)

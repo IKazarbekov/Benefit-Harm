@@ -1,13 +1,10 @@
 import sys
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel, QTabWidget, \
     QStackedWidget, QStackedLayout, QFormLayout, QLineEdit, QSpinBox, QComboBox, QTableWidget, QTableWidgetItem, \
     QHBoxLayout
-
 from student import StudentWindow
 from py_model.student import Student
-
 import utils.data_students as data_students
 import config
 

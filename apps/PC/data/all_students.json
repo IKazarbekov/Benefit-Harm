@@ -9,7 +9,136 @@
                 "mood": "Радость",
                 "time": "2026-08-06 14:41:38",
                 "self_assessment": "Лучше всех",
-                "modul": null
+                "modul": null,
+                "snapshots": []
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-07 10:46:17",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": []
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-07 12:10:20",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "neutral",
+                        "time": "2026-08-07 12:10:03"
+                    },
+                    {
+                        "emotion": "fear",
+                        "time": "2026-08-07 12:10:09"
+                    },
+                    {
+                        "emotion": "fear",
+                        "time": "2026-08-07 12:10:15"
+                    },
+                    {
+                        "emotion": "fear",
+                        "time": "2026-08-07 12:10:21"
+                    },
+                    {
+                        "emotion": "fear",
+                        "time": "2026-08-07 12:10:27"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-07 12:19:37",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "fear",
+                        "game_different": 10,
+                        "time": "2026-08-07 12:19:19"
+                    },
+                    {
+                        "emotion": "surprise",
+                        "game_different": 10,
+                        "time": "2026-08-07 12:19:25"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "game_different": 10,
+                        "time": "2026-08-07 12:19:31"
+                    },
+                    {
+                        "emotion": "fear",
+                        "game_different": 10,
+                        "time": "2026-08-07 12:19:37"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-07 12:22:58",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "fear",
+                        "game_different": 10,
+                        "time": "2026-08-07 12:22:40"
+                    },
+                    {
+                        "emotion": "fear",
+                        "game_different": 10,
+                        "time": "2026-08-07 12:22:46"
+                    },
+                    {
+                        "emotion": "fear",
+                        "game_different": 0,
+                        "time": "2026-08-07 12:22:52"
+                    },
+                    {
+                        "emotion": "fear",
+                        "game_different": 0,
+                        "time": "2026-08-07 12:22:58"
+                    },
+                    {
+                        "emotion": "fear",
+                        "game_different": 0,
+                        "time": "2026-08-07 12:23:04"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-07 13:14:37",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "fear",
+                        "frequency_key_down": 0.0,
+                        "game_different": 0,
+                        "time": "2026-08-07 13:14:20"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 15.223210386166297,
+                        "game_different": 0,
+                        "time": "2026-08-07 13:14:27"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 28.00204230311891,
+                        "game_different": 10,
+                        "time": "2026-08-07 13:14:33"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 30.108691615370592,
+                        "game_different": 10,
+                        "time": "2026-08-07 13:14:39"
+                    }
+                ]
             }
         ]
     }

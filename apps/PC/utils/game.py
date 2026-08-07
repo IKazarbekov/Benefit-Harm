@@ -1,5 +1,4 @@
 import pygame, math, copy, time
-from _pytest import runner
 
 """МОДУЛЬ ИГРА
 ОТВЕЧАЕТ ЗА ИГРОВОЙ ПРОЦЕСС
@@ -62,7 +61,6 @@ class RunEnemy(GameObject):
                 pygame.draw.circle(surface, (255, 255, 0), (int(point[0]), int(point[1])), 5)
 
 """НАЧАЛЬНЫЕ НАСТРОЙКИ"""
-pygame.init()
 
 # Размеры игрового мира (фиксированные)
 _GAME_WIDTH = 1200
@@ -78,8 +76,8 @@ screen_height = _WINDOW_HEIGHT
 fullscreen = False  # начальный режим – оконный
 
 # Создаём окно (в оконном режиме)
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-game_surface = pygame.Surface((_GAME_WIDTH, _GAME_HEIGHT))
+screen = None
+game_surface = None
 pygame.display.set_caption("Benefit Harm")
 
 clock = pygame.time.Clock()
@@ -97,6 +95,13 @@ DEFEAT_LABEL_REPEAT = False
 PLAYER_X, PLAYER_Y = 200, 200
 
 WINNING_CONDITION_FUNCTION = None
+
+"""СТИТИСТИКА"""
+# region
+_count_key_down = 0
+def frequency_key_down():
+    return _count_key_down / game_time()
+# endregion
 
 """ИГРОВЫЕ ОБЪЕКТЫ"""
 # игрок
@@ -139,16 +144,19 @@ def draw(surface):
     text = font.render(f"HP: {player.health}", True, (255, 255, 255))
     surface.blit(text, (100, 700))
 
-"""ИГРОВАЯ ЛОГИКА"""
-def game_logic():
-    # --- Игровая логика ---
-    # Управление
+def control():
+    global _count_key_down
+    """ УПРАВЛЕНИЕ И ДВИЖЕНИЕ ИГРОКА"""
     keys = pygame.key.get_pressed()
     dx, dy = 0, 0
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:   dx = -player.speed
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:  dx = +player.speed
     if keys[pygame.K_UP] or keys[pygame.K_w]:     dy = -player.speed
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:   dy = +player.speed
+
+    # счётчик нажатий
+    if dx != 0 or dy != 0:
+        _count_key_down += 1
 
     # Двигаем игрока
     player.rect.x += dx
@@ -160,6 +168,12 @@ def game_logic():
             player.rect.x -= dx
             player.rect.y -= dy
             break
+
+"""ИГРОВАЯ ЛОГИКА"""
+def game_logic():
+    # --- Игровая логика ---
+    # Управление
+    control()
 
     # Проверка столкновения с врагами и их движение
     for enemy in _enemies[:]:
@@ -185,7 +199,7 @@ def winner_game():
     font = pygame.font.Font(None, 74)
 
     # Сообщение игроку
-    text = font.render("Вы выиграли", True, (255, 0, 0))
+    text = font.render("Вы выиграли", True, (0, 255, 0))
     game_surface.blit(text, (_GAME_WIDTH // 2 - text.get_width() // 2, _GAME_HEIGHT // 2 - 50))
 
     restart_text = pygame.font.Font(None, 36).render("Нажмите R для выхода", True, (255, 255, 255))
@@ -199,7 +213,7 @@ def winner_game():
 
 """ПРОИГРЫШ"""
 def defeat_game():
-    global _defeat_label_index
+    global _defeat_label_index, game_surface
     # Рисуем экран поражения на game_surface
     game_surface.fill((0, 0, 0))
     font = pygame.font.Font(None, 74)
@@ -231,9 +245,15 @@ def game_time():
 
 """ЗАПУСК ИГРЫ"""
 def run():
-    assert WINNING_CONDITION_FUNCTION is not None, "Не выстовленно условие выигрыша игры, установите функцию возвращающую bool в WINNING_CONDITION_FUNCTION()"
+    global screen_width, screen_height, fullscreen, screen, game_surface
 
-    global screen_width, screen_height, fullscreen, screen, _running_game
+    # Создаём окно (в оконном режиме)
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+    game_surface = pygame.Surface((_GAME_WIDTH, _GAME_HEIGHT))
+    pygame.display.set_caption("Benefit Harm")
+    pygame.init()
+
+    assert WINNING_CONDITION_FUNCTION is not None, "Не выстовленно условие выигрыша игры, установите функцию возвращающую bool в WINNING_CONDITION_FUNCTION()"
 
     restart_game()
     while _running_game:
@@ -269,6 +289,7 @@ def run():
             defeat_game()
         elif WINNING_CONDITION_FUNCTION():
             winner_game()
+            break
         else:
             game_logic()
             draw(game_surface)
@@ -297,3 +318,7 @@ def run():
         clock.tick(FPS)
 
     pygame.quit()
+
+if __name__ == "__main__":
+    WINNING_CONDITION_FUNCTION = lambda: False
+    run()

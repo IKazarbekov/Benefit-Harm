@@ -1,11 +1,44 @@
-import game
-from game import RunEnemy
+import threading, time
+from apps.PC.utils.game import RunEnemy
+from ml_model.face.fast_deepface import get_mood
+from py_model.session import Session
+from py_model.snapshote import GameSnapshotV1
+from apps.PC.utils import game
+from utils.game import frequency_key_down
 
 """
 ЗАПУСКАЕТ ИГРЫ, ХРАНИТ В СЕБЕ ВСЕ СЦЕНАРИИ
 И СОХРАНЯЕТ ВСЮ ИСТОРИЮ
 """
 
+""" ДОП МЕТОДЫ """
+def get_data_mood(session: Session):
+    """Берёт данные настроения, частоты нажатия клавиш и записывает к студенту"""
+    def snapshot():
+        while True:
+            emotion = get_mood()
+            difficulty = get_difficulty()
+            frequency_key_down = game.frequency_key_down()
+            snapshot = GameSnapshotV1(emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down)
+            session.snapshots.append(snapshot)
+
+            time.sleep(4)
+
+    thread = threading.Thread(target=snapshot)
+    thread.start()
+
+def get_difficulty() -> int:
+    """
+    getter game different
+    :return: int
+    """
+    summa = 0
+    for enemy in game._enemies:
+        if game.game_time() > enemy.begin_time_run:
+            summa += enemy.speed
+    return summa
+
+""" СЦЕНАРИИ ИГР """
 def modul_my_errors_run():
     # defeat and winner game settings
     game.DEFEAT_LABEL = [
@@ -41,5 +74,7 @@ def modul_my_errors_run():
     # run game
     game.run()
 
+
+""" ТЕСТ """
 if __name__ == '__main__':
     modul_my_errors_run()
