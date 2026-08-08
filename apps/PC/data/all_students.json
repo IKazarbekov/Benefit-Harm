@@ -139,6 +139,784 @@
                         "time": "2026-08-07 13:14:39"
                     }
                 ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 09:12:11",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "fear",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:11:53"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 11,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:12:00"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 34,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:12:06"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 8,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:12:12"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 09:22:33",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 14,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:22:15"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 34,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:22:19"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 26,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:22:23"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 59,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:22:27"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 58,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:22:31"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 09:38:47",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 25,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:38:37"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 31,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:38:42"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 32,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:38:47"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 09:43:39",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "fear",
+                        "frequency_key_down": 8,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:43:36"
+                    },
+                    {
+                        "emotion": "fear",
+                        "frequency_key_down": 46,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:43:41"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 09:49:18",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:49:00"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 12,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:49:05"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 57,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:49:10"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 51,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:49:15"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 09:53:08",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 5,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:52:20"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 4,
+                        "game_different": 0,
+                        "time": "2026-08-08 09:52:25"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:52:30"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 55,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:52:35"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 49,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:52:40"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 44,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:52:45"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 41,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:52:50"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 39,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:52:55"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 34,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:53:00"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 31,
+                        "game_different": 10,
+                        "time": "2026-08-08 09:53:05"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 10:04:28",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:06"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:11"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 0,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:02:16"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:20"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:25"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:30"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:35"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 14,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:41"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 6,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:02:46"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 8,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:02:51"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 9,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:02:56"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 7,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:03:01"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 8,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:03:06"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 56,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:03:11"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 13,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:16"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 13,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:21"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 13,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:26"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 13,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:31"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 13,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:36"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 13,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:41"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 144,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:03:46"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 439,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:03:51"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 742,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:03:56"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 1045,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:04:01"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 1347,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:04:06"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 1641,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:04:12"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 0,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:04:17"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 48,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:04:22"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 19,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:04:27"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 10:09:03",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 9,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:08:16"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 17,
+                        "game_different": 0,
+                        "time": "2026-08-08 10:08:21"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 55,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:26"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 53,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:31"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 20,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:36"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 27,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:42"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 47,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:47"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 47,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:53"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 47,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:08:58"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 47,
+                        "game_different": 10,
+                        "time": "2026-08-08 10:09:04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Атай",
+        "age": 46,
+        "is_male": "Мужской",
+        "class_": "",
+        "sessions": []
+    },
+    {
+        "name": "Асай",
+        "age": 43,
+        "is_male": "Мужской",
+        "class_": "",
+        "sessions": [
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 12:07:20",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:07:02"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:07:07"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 54,
+                        "game_different": 4,
+                        "time": "2026-08-08 12:07:12"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 9,
+                        "game_different": 4,
+                        "time": "2026-08-08 12:07:17"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 12:10:14",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:02"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 19,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:07"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 19,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:09:12"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 59,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:09:17"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 53,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:09:22"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 46,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:27"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 88,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:32"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 88,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:37"
+                    },
+                    {
+                        "emotion": "fear",
+                        "frequency_key_down": 101,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:42"
+                    },
+                    {
+                        "emotion": "angry",
+                        "frequency_key_down": 120,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:47"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 120,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:09:52"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 130,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:09:57"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 378,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:10:02"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 684,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:10:07"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 42,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:10:12"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 12:19:19",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": []
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 12:22:08",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:21:40"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 61,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:21:45"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 36,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:21:50"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 60,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:21:55"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 61,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:22:00"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 56,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:22:06"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Лаги1",
+        "age": 18,
+        "is_male": "Мужской",
+        "class_": "Я",
+        "sessions": [
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 12:32:07",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 1,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:31:39"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 4,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:31:44"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 2,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:31:50"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 1,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:31:55"
+                    },
+                    {
+                        "emotion": "happy",
+                        "frequency_key_down": 3,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:32:00"
+                    },
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 2,
+                        "game_different": 6,
+                        "time": "2026-08-08 12:32:05"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 12:36:12",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "sad",
+                        "frequency_key_down": 0,
+                        "game_different": 0,
+                        "time": "2026-08-08 12:36:14"
+                    }
+                ]
+            },
+            {
+                "mood": "Радость",
+                "time": "2026-08-08 13:01:18",
+                "self_assessment": "Лучше всех",
+                "modul": null,
+                "snapshots": [
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 1,
+                        "game_different": 0,
+                        "health": 10,
+                        "time": "2026-08-08 13:00:51"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 2,
+                        "game_different": 0,
+                        "health": 10,
+                        "time": "2026-08-08 13:00:56"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 3,
+                        "game_different": 6,
+                        "health": 10,
+                        "time": "2026-08-08 13:01:01"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 1,
+                        "game_different": 6,
+                        "health": 10,
+                        "time": "2026-08-08 13:01:06"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 3,
+                        "game_different": 6,
+                        "health": 10,
+                        "time": "2026-08-08 13:01:12"
+                    },
+                    {
+                        "emotion": "neutral",
+                        "frequency_key_down": 2,
+                        "game_different": 6,
+                        "health": 10,
+                        "time": "2026-08-08 13:01:17"
+                    }
+                ]
             }
         ]
     }

@@ -236,8 +236,7 @@ class StudentWindow(QMainWindow):
         assert self.session.mood is None and self.session.time is None and self.session.self_assessment is None, "Атрибуты сеанса при вызоре этого метода должны быть пусты"
         assert isinstance(data, dict), "Неверный аргумент data, возможно вы не использовали show_form()"
 
-        game_launcher.get_data_mood(self.session)
-        game_launcher.modul_my_errors_run()
+        game_launcher.modul_my_errors_run(self.session, 3)
 
         self.session.mood = Mood(data["Настроение"])
         self.session.time = datetime.now()

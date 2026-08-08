@@ -1,11 +1,18 @@
 #python 3.13.9
-pyqt6
-notebook
-opencv-python
-pyinstaller
-insightface
-onnxruntime
-pygame-ce
+# ui
+pyqt6==6.11.0
+pygame-ce==2.5.7
 
+# temp
+insightface==1.0.1
 deepface==0.0.100
-tf-keras
+tf-keras==2.21.0
+
+# ml
+scikit-learn==1.7.2
+notebook==7.6.1
+
+# other tools
+opencv-python==4.10.0.84
+pyinstaller==6.21.0
+onnxruntime==1.23.2

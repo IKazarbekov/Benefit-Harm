@@ -18,7 +18,7 @@ class GameObject:
 
 # Движущийся враг
 class RunEnemy(GameObject):
-    def __init__(self, x, y, color=(255, 0, 0), health=100, width=100, height=100, speed=5, points=None, begin_time_run = 0):
+    def __init__(self, x, y, color=(255, 0, 0), health=100, width=100, height=100, speed=5, points=None, begin_time_run = 0, circle:bool = False):
         super().__init__(x, y, color=color, health=health, width=width, height=height, speed=speed)
 
         # Список точек, по которым будет двигаться враг
@@ -26,12 +26,18 @@ class RunEnemy(GameObject):
         self.current_point_index = 0  # Индекс текущей точки
         self.rect.x = x
         self.rect.y = y
+        self.circle = circle
 
         self.begin_time_run = begin_time_run
 
     def run(self):
+        # Если нет точек или не пришло время — не двигаемся
         if not self.points or game_time() < self.begin_time_run:
-            return  # Если нет точек — не двигаемся
+            return
+
+        # Если движение законченно
+        if not self.circle and self.current_point_index == len(self.points) - 1:
+            return
 
         # Текущая целевая точка
         target_x, target_y = self.points[self.current_point_index]
@@ -61,7 +67,7 @@ class RunEnemy(GameObject):
                 pygame.draw.circle(surface, (255, 255, 0), (int(point[0]), int(point[1])), 5)
 
 """НАЧАЛЬНЫЕ НАСТРОЙКИ"""
-
+# region
 # Размеры игрового мира (фиксированные)
 _GAME_WIDTH = 1200
 _GAME_HEIGHT = 800
@@ -87,23 +93,26 @@ _running_game = True
 
 # Меняющиеся переменные
 _defeat_label_index = 0
+# endregion
 
 """НАСТРАИВАЕМЫЕ НАСТРОЙКИ"""
+# region
 DEFEAT_LABEL = ["Вы проиграли"]
 DEFEAT_LABEL_REPEAT = False
 
 PLAYER_X, PLAYER_Y = 200, 200
 
 WINNING_CONDITION_FUNCTION = None
+# endregion
 
 """СТИТИСТИКА"""
 # region
-_count_key_down = 0
-def frequency_key_down():
-    return _count_key_down / game_time()
+_times_key_downs = []
+_cps = 0
 # endregion
 
 """ИГРОВЫЕ ОБЪЕКТЫ"""
+# region
 # игрок
 player = GameObject(PLAYER_X, PLAYER_Y, color="gray", health=10, width=60, height=60)
 
@@ -122,6 +131,7 @@ def add_enemy(points: tuple):
     assert isinstance(points, tuple)
 
     global _enemies
+# endregion
 
 """РИСОВАНИЕ КАДРА (на внутренней поверхности)"""
 def draw(surface):
@@ -145,7 +155,7 @@ def draw(surface):
     surface.blit(text, (100, 700))
 
 def control():
-    global _count_key_down
+    global _times_key_downs, _cps
     """ УПРАВЛЕНИЕ И ДВИЖЕНИЕ ИГРОКА"""
     keys = pygame.key.get_pressed()
     dx, dy = 0, 0
@@ -153,10 +163,6 @@ def control():
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:  dx = +player.speed
     if keys[pygame.K_UP] or keys[pygame.K_w]:     dy = -player.speed
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:   dy = +player.speed
-
-    # счётчик нажатий
-    if dx != 0 or dy != 0:
-        _count_key_down += 1
 
     # Двигаем игрока
     player.rect.x += dx
@@ -245,7 +251,7 @@ def game_time():
 
 """ЗАПУСК ИГРЫ"""
 def run():
-    global screen_width, screen_height, fullscreen, screen, game_surface
+    global screen_width, screen_height, fullscreen, screen, game_surface, _running_game, _times_key_downs, _cps
 
     # Создаём окно (в оконном режиме)
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
@@ -260,10 +266,17 @@ def run():
         # --- Обработка событий ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                _running_game = False
 
             # Переключение полноэкранного режима по F11
             if event.type == pygame.KEYDOWN:
+                # statistic cps (frequency key down)
+                now = time.time()
+                _times_key_downs.append(now)
+                _times_key_downs = [t for t in _times_key_downs if now - t <= 1.0]
+                _cps = len(_times_key_downs)
+
+                # full screen
                 if event.key == pygame.K_F11:
                     fullscreen = not fullscreen
                     if fullscreen:
@@ -289,7 +302,7 @@ def run():
             defeat_game()
         elif WINNING_CONDITION_FUNCTION():
             winner_game()
-            break
+            _running_game = False
         else:
             game_logic()
             draw(game_surface)
