@@ -9,14 +9,17 @@ from apps.PC.utils import game
 И СОХРАНЯЕТ ВСЮ ИСТОРИЮ
 """
 
+snapshots = []
+
 """ ДОП МЕТОДЫ """
-def collect_data_mood(session: Session, duration: int):
+def collect_data_mood(session_id: int, snapshots: list, duration: int):
     """Берёт данные настроения, частоты нажатия клавиш и записывает к студенту
     :param session: Session
     :param duration: int
     :return: None
     """
-    assert isinstance(session, Session), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
+    assert isinstance(session_id, int), "Неверный тип параметра снимков введён в функцию collect_data_mood()"
+    assert isinstance(snapshots, list), "Неверный тип параметра снимков введён в функцию collect_data_mood()"
     assert isinstance(duration, int), "Неверный тип параметра интервала записи введён в функцию collect_data_mood()"
     assert duration > 0, "Неверное значение параметра интервала записи введён в функцию collect_data_mood()"
 
@@ -28,8 +31,8 @@ def collect_data_mood(session: Session, duration: int):
             difficulty = get_difficulty()
             frequency_key_down = game._cps
             health = game.player.health
-            snapshot = GameSnapshotV1(emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health)
-            session.snapshots.append(snapshot)
+            snapshot = GameSnapshotV1(session_id = session_id, emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health)
+            snapshots.append(snapshot)
 
             time.sleep(duration)
 
@@ -48,14 +51,15 @@ def get_difficulty() -> int:
     return summa
 
 """ СЦЕНАРИИ ИГР """
-def modul_my_errors_run(session: Session, duration_snapshots: int) -> None:
+def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: int) -> None:
     """
     Модуль игры - учимся на ошибках. Заучивание на ошибках от поведения враждебных объектов
     :param session: сеанс студента
     :param duration_snapshots: интервал записи снимков во время игры, если None то запись отключена
     :return: None
     """
-    assert isinstance(session, Session), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
+    assert isinstance(snapshots, list), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
+    assert isinstance(session_id, int), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     # defeat and winner game settings
     game.DEFEAT_LABEL = [
         "Первая ошибка",
@@ -66,7 +70,7 @@ def modul_my_errors_run(session: Session, duration_snapshots: int) -> None:
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 30
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 5
 
     # enemy
     game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=6, begin_time_run=10, points=(
@@ -108,7 +112,7 @@ def modul_my_errors_run(session: Session, duration_snapshots: int) -> None:
 
     # snapshots run
     if duration_snapshots is not None:
-        collect_data_mood(session, duration_snapshots)
+        collect_data_mood(session_id, snapshots, duration_snapshots)
 
     # run game
     game.run()

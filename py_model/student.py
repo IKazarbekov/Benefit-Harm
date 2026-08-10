@@ -1,14 +1,11 @@
-from dataclasses import dataclass, field
-from typing import List
-from py_model.session import Session
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from core.base import Base
 
-@dataclass
-class Student:
-    # begin data
-    # this data must be failed in together during registration
-    name: str
-    age: int
-    is_male: bool
-    class_: str = None
+class Student(Base):
+    __tablename__ = 'students'
 
-    sessions: List[Session] = field(default_factory=list)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String)
+    age = Column(Integer)
+    is_male = Column(Boolean)
+    class_ = Column(String)

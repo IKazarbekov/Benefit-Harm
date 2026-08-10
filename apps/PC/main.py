@@ -5,13 +5,14 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVB
     QHBoxLayout
 from student import StudentWindow
 from py_model.student import Student
-import utils.data_students as data_students
-import config
+from py_model.dto.student import Student as DTOStudent
+from apps.PC.utils import database, dto_mapper
 
 class StartWindow(QMainWindow):
     def __init__(self):
         # Data
-        self.students = data_students.load_more_student(config.FILE_ALL_STUDENTS)
+        database.connect()
+        self.dto_students = dto_mapper.get_all_dto_students()
         # UI
         super().__init__()
         self.setWindowTitle("Benefit Harm Launcher 0.0.1")
@@ -26,6 +27,7 @@ class StartWindow(QMainWindow):
         button_teacher = QPushButton("Учитель", self)
 
         button_student.clicked.connect(self.session_start_action)
+        button_student.setEnabled(False)
         button_teacher.clicked.connect(lambda : self.stacked.setCurrentIndex(1))
 
         main_vbox = QVBoxLayout(self)
@@ -40,7 +42,7 @@ class StartWindow(QMainWindow):
         self.teacher_table = QTableWidget()
         self.teacher_table.setColumnCount(4)
         self.teacher_table.setHorizontalHeaderLabels(["Имя", "Класс",  "Последний сеанс", "Сеанс"])
-        self.teacher_table.setColumnWidth(2, 160)
+        self.teacher_table.setColumnWidth(2, 180)
         teacher_button_add_student = QPushButton("Добавить ученика", self)
         teacher_button_add_student.clicked.connect(lambda : self.stacked.setCurrentIndex(2))
 
@@ -95,15 +97,13 @@ class StartWindow(QMainWindow):
         self.setStyleSheet("font-size:20px;")
         # endregion
 
-    def closeEvent(self, event):
-        data_students.save(self.students, config.FILE_ALL_STUDENTS)
-
+    """методы для кнопок"""
     def update_table_students(self):
         """
         update student table self.teacher_table: QTableWidget
         :return: None
         """
-        students = self.students
+        students = self.dto_students
 
         self.teacher_table.setRowCount(len(students))
         for i, student in enumerate(students):
@@ -114,8 +114,8 @@ class StartWindow(QMainWindow):
             button = QPushButton("начать")
             button.clicked.connect(begin_session)
             str_last_time = "Не было"
-            if len(student.sessions) > 0:
-                str_last_time = student.sessions[-1].time.strftime("%Y.%m.%d %H:%M")
+            if student.str_last_time_session:
+                str_last_time = student.str_last_time_session
             label_last_session = QLabel(str_last_time)
 
             self.teacher_table.setCellWidget(i, 0, QLabel(student.name))
@@ -123,16 +123,20 @@ class StartWindow(QMainWindow):
             self.teacher_table.setCellWidget(i, 2, label_last_session)
             self.teacher_table.setCellWidget(i, 3, button)
 
-
-
-    def session_start_action(self, student = Student(None, None, None)):
+    def session_start_action(self, student = Student()):
         """
         :param student: student, which play session
         :return: None
         """
         self.window_student = StudentWindow(student)
         self.window_student.setWindowModality(Qt.WindowModality.ApplicationModal)
+        self.window_student.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.window_student.show()
+        def close_window_of_student():
+            database.add_object(self.window_student.session)
+            database.add_objects(self.window_student.snapshots)
+            database.save()
+        self.window_student.destroyed.connect(close_window_of_student)
 
     def add_student_action(self):
         """
@@ -143,13 +147,24 @@ class StartWindow(QMainWindow):
 
         name = self.addendum_student_name.text()
         age = self.addendum_student_sp.value()
-        male = self.addendum_student_cb.currentText()
+        is_male = self.addendum_student_cb.currentText() == "Мужской"
         class_ = self.addendum_student_class.text()
 
-        student = Student(name, age, male, class_)
-        self.students.append(student)
-        data_students.save(self.students, config.FILE_ALL_STUDENTS)
-
+        new_student = Student(
+            name=name,
+            age=age,
+            is_male=is_male,
+            class_= class_
+        )
+        database.add_object(new_student)
+        database.save()
+        new_dto_student = DTOStudent(
+            db_id=new_student.id,
+            name=new_student.name,
+            class_=new_student.class_,
+            str_last_time_session="не было"
+        )
+        self.dto_students.append(new_dto_student)
         self.stacked.setCurrentIndex(1)
         self.update_table_students()
 

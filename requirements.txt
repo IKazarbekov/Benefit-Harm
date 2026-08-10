@@ -16,3 +16,6 @@ notebook==7.6.1
 opencv-python==4.10.0.84
 pyinstaller==6.21.0
 onnxruntime==1.23.2
+
+# data
+SQLAlchemy==2.0.51

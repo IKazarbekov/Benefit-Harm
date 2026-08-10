@@ -9,7 +9,8 @@ import utils.camera as camera
 from ml_model.face import fast_insighface
 from py_model import student
 from typing import Callable
-from py_model.session import Session, Mood, Self_Assessment
+from py_model.session import Session, Self_Assessment
+from py_model.mood import Mood
 import config
 
 class StudentWindow(QMainWindow):
@@ -17,6 +18,7 @@ class StudentWindow(QMainWindow):
         # data
         self.student = student
         self.session = None
+        self.snapshots = []
         self.allow_camera = allow_camera
 
         # UI
@@ -223,8 +225,7 @@ class StudentWindow(QMainWindow):
     def begin_session(self):
         assert not self.student is None and self.session is None, "Состояние переменных не верно, возможно вы вызвали не подходящий метод begin_session()"
 
-        self.session = Session()
-        self.student.sessions.append(self.session)
+        self.session = Session(student_id = self.student.db_id)
 
         self.show_form("Как вы ?", {
             "Настроение": Mood,
@@ -236,7 +237,7 @@ class StudentWindow(QMainWindow):
         assert self.session.mood is None and self.session.time is None and self.session.self_assessment is None, "Атрибуты сеанса при вызоре этого метода должны быть пусты"
         assert isinstance(data, dict), "Неверный аргумент data, возможно вы не использовали show_form()"
 
-        game_launcher.modul_my_errors_run(self.session, 3)
+        game_launcher.modul_my_errors_run(1, self.snapshots, 3)
 
         self.session.mood = Mood(data["Настроение"])
         self.session.time = datetime.now()

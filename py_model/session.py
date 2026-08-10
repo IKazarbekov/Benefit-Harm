@@ -1,7 +1,7 @@
-from dataclasses import dataclass, field
-from enum import Enum
+from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey, Enum as SAEnum
+from core.base import Base
 from datetime import datetime
-from typing import List
+from enum import Enum
 from py_model.mood import Mood
 
 class Self_Assessment(Enum):
@@ -14,10 +14,12 @@ class Self_Assessment(Enum):
 class Modul(Enum):
     ERROR = "Ошибка"
 
-@dataclass
-class Session:
-    mood: Mood = None
-    time: datetime = None
-    self_assessment: Self_Assessment = None
-    modul: Modul = None
-    snapshots: List = field(default_factory=list)
+class Session(Base):
+    __tablename__ = 'sessions'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    student_id = Column(Integer, ForeignKey('students.id'))
+    mood = Column(SAEnum(Mood))           # храним значение Enum (например, Mood.GOOD.value)
+    time = Column(DateTime)         # datetime объект
+    self_assessment = Column(SAEnum(Self_Assessment)) # значение Self_Assessment
+    modul = Column(SAEnum(Modul))          # значение Modul
