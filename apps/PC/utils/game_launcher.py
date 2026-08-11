@@ -70,10 +70,10 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: in
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 5
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 50
 
     # enemy
-    game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=6, begin_time_run=10, points=(
+    game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=15, begin_time_run=5, points=(
         # круг 1
         (850, 150),
         (150, 150),
@@ -90,21 +90,17 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: in
         (850, 350),
         # круг 1
         (850, 150),
-        (150, 150),
-        (150, 350),
-        (850, 350),
-        # круг 2
-        (850, 150),
-        (150, 150),
-        (150, 350),
-        (850, 350),
-        # диагональ
         (150, 150),
         (150, 350),
         (850, 350),
         #уходит
-        (1200, 150),
+        (1500, 150),
     ), circle=False))
+
+    game.BEGIN_POINTS.append(game.Point(200, 200))
+    game.BEGIN_POINTS.append(game.Point(300, 300))
+    game.BEGIN_POINTS.append(game.Point(700, 500))
+    game.BEGIN_POINTS.append(game.Point(900, 200))
 
     # player
     game.PLAYER_X = 500
@@ -119,4 +115,4 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: in
 
 """ ТЕСТ """
 if __name__ == '__main__':
-    modul_my_errors_run(Session(), duration_snapshots=1)
+    modul_my_errors_run(1, [], None)

@@ -23,6 +23,8 @@ class StudentWindow(QMainWindow):
 
         # UI
         super().__init__()
+        self.setFixedSize(800, 500)
+        self.setStyleSheet("font-size:20px;")
         self.initUI()
         if self.student is None:
             self.show_message("Я Benefit Harm", "Давай познакомимся !", "Начать", self.begin_register)
@@ -237,7 +239,7 @@ class StudentWindow(QMainWindow):
         assert self.session.mood is None and self.session.time is None and self.session.self_assessment is None, "Атрибуты сеанса при вызоре этого метода должны быть пусты"
         assert isinstance(data, dict), "Неверный аргумент data, возможно вы не использовали show_form()"
 
-        game_launcher.modul_my_errors_run(1, self.snapshots, 3)
+        game_launcher.modul_my_errors_run(self.session.id, self.snapshots, 3)
 
         self.session.mood = Mood(data["Настроение"])
         self.session.time = datetime.now()
