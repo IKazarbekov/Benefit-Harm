@@ -236,7 +236,7 @@ class StudentWindow(QMainWindow):
 
     def continue_session(self, data: dict):
         assert not self.student is None and not self.session is None, "Состояние переменных не верно, возможно вы вызвали не подходящий метод continue_session()"
-        assert self.session.mood is None and self.session.time is None and self.session.self_assessment is None, "Атрибуты сеанса при вызоре этого метода должны быть пусты"
+        assert self.session.mood is None and self.session.self_assessment is None, "Атрибуты сеанса при вызове этого метода должны быть пусты"
         assert isinstance(data, dict), "Неверный аргумент data, возможно вы не использовали show_form()"
 
         game_launcher.modul_my_errors_run(self.session.id, self.snapshots, 3)

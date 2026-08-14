@@ -20,6 +20,7 @@ class Session(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     student_id = Column(Integer, ForeignKey('students.id'))
     mood = Column(SAEnum(Mood))           # храним значение Enum (например, Mood.GOOD.value)
-    time = Column(DateTime)         # datetime объект
+    begin_time = Column(DateTime)         # datetime объект
+    end_time = Column(DateTime)         # datetime объект
     self_assessment = Column(SAEnum(Self_Assessment)) # значение Self_Assessment
     modul = Column(SAEnum(Modul))          # значение Modul

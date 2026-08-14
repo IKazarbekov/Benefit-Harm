@@ -31,7 +31,7 @@ def add_objects(objects):
     db_session.add_all(objects)
 
 def get_last_session(student_id: int):
-    return db_session.query(Session).filter_by(student_id=student_id).order_by(Session.time.desc()).first()
+    return db_session.query(Session).filter_by(student_id=student_id).order_by(Session.begin_time.desc()).first()
 
 def save():
     assert db_session is not None, "Нет подключения к базе данных"
