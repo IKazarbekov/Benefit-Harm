@@ -33,6 +33,10 @@ def add_objects(objects):
 def get_last_session(student_id: int):
     return db_session.query(Session).filter_by(student_id=student_id).order_by(Session.begin_time.desc()).first()
 
+def get_student(student_id: int):
+    assert isinstance(student_id, int), "student_id должен быть int"
+    return db_session.query(Student).filter_by(id=student_id).first()
+
 def save():
     assert db_session is not None, "Нет подключения к базе данных"
     db_session.commit()

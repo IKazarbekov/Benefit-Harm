@@ -3,10 +3,15 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel, QTabWidget, \
     QStackedWidget, QStackedLayout, QFormLayout, QLineEdit, QSpinBox, QComboBox, QTableWidget, QTableWidgetItem, \
     QHBoxLayout
-from student import StudentWindow
+from py_model.session import Session
 from py_model.student import Student
 from py_model.dto.student import Student as DTOStudent
 from apps.PC.utils import database, dto_mapper
+from utils import game_launcher
+from datetime import datetime
+
+from utils.game_launcher import snapshots
+
 
 class StartWindow(QMainWindow):
     def __init__(self):
@@ -108,11 +113,12 @@ class StartWindow(QMainWindow):
         self.teacher_table.setRowCount(len(students))
         for i, student in enumerate(students):
 
-            def begin_session():
-                self.session_start_action(student)
+            def begin_session(student_id: int):
+                origin_student = database.get_student(student_id)
+                self.session_start_action(origin_student)
 
             button = QPushButton("начать")
-            button.clicked.connect(begin_session)
+            button.clicked.connect(lambda: begin_session(student.db_id))
             str_last_time = "Не было"
             if student.str_last_time_session:
                 str_last_time = student.str_last_time_session
@@ -123,20 +129,23 @@ class StartWindow(QMainWindow):
             self.teacher_table.setCellWidget(i, 2, label_last_session)
             self.teacher_table.setCellWidget(i, 3, button)
 
-    def session_start_action(self, student = Student()):
+    def session_start_action(self, student: Student):
         """
         :param student: student, which play session
         :return: None
         """
-        self.window_student = StudentWindow(student)
-        self.window_student.setWindowModality(Qt.WindowModality.ApplicationModal)
-        self.window_student.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.window_student.show()
-        def close_window_of_student():
-            database.add_object(self.window_student.session)
-            database.add_objects(self.window_student.snapshots)
-            database.save()
-        self.window_student.destroyed.connect(close_window_of_student)
+        # begin data
+        session = Session(student_id = student.id, begin_time=datetime.now())
+        database.add_object(session)
+        database.save()
+        snapshots = []
+
+        # gameplay
+        game_launcher.modul_my_errors_run(session.id, snapshots, 5)
+
+        # end data
+        session.end_time = datetime.now()
+        database.save()
 
     def add_student_action(self):
         """
