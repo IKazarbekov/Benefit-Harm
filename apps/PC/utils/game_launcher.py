@@ -81,7 +81,7 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 60
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 5
 
     # enemy
     game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=5, begin_time_run=15, points=(

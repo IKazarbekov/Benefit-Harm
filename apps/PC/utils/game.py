@@ -247,7 +247,7 @@ def restart_game():
 
 def winner_game():
     """ПОБЕДА"""
-    global _defeat_label_index
+    global _defeat_label_index, _running_game
     # Рисуем экран поражения на game_surface
     game_surface.fill((0, 0, 0))
     font = pygame.font.Font(None, 74)
@@ -263,9 +263,7 @@ def winner_game():
     # Обработка перезапуска
     keys = pygame.key.get_pressed()
     if keys[pygame.K_r]:
-        pygame.quit()
         _running_game = False
-
 
 def defeat_game():
     """ПРОИГРЫШ"""
@@ -372,6 +370,7 @@ def run():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 _running_game = False
+                break
 
             # Переключение полноэкранного режима по F11
             if event.type == pygame.KEYDOWN:
