@@ -47,10 +47,13 @@ class RunEnemy(GameRunObject):
             return
 
         # Если движение законченно
-        if not self.circle and self.current_point_index == len(self.points):
-            if self.removeInEnd:
-                _enemies.remove(self)
-            return
+        if self.current_point_index == len(self.points):
+            if self.circle:
+                self.current_point_index = 0
+            else:
+                if self.removeInEnd:
+                    _enemies.remove(self)
+                return
 
         # Текущая целевая точка
         target_x, target_y = self.points[self.current_point_index]
@@ -64,7 +67,7 @@ class RunEnemy(GameRunObject):
             # Если почти достигли точки — переключаемся на следующую
             self.rect.x = target_x
             self.rect.y = target_y
-            self.current_point_index = (self.current_point_index + 1) % len(self.points)
+            self.current_point_index = (self.current_point_index + 1)
         else:
             # Двигаемся к цели с нормализацией вектора
             self.rect.x += (dx / distance) * self.speed
@@ -75,7 +78,7 @@ class RunEnemy(GameRunObject):
         pygame.draw.rect(surface, self.color, self.rect)
 
         # Для отладки — нарисовать маршрут
-        if __debug__ and self.points:
+        if False and __debug__ and self.points:
             for point in self.points:
                 pygame.draw.circle(surface, (255, 255, 0), (int(point[0]), int(point[1])), 5)
 

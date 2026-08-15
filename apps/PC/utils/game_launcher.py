@@ -71,7 +71,6 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
     """
     assert isinstance(snapshots, list), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     assert isinstance(session_id, int), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
-    assert isinstance(duration_snapshots, float), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     # defeat and winner game settings
     game.DEFEAT_LABEL = [
         "Первая ошибка",
@@ -82,10 +81,10 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 20
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 60
 
     # enemy
-    game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=15, begin_time_run=5, points=(
+    game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=5, begin_time_run=15, points=(
         # круг 1
         (850, 150),
         (150, 150),
@@ -108,6 +107,9 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
         #уходит
         (1500, 150),
     ), circle=False))
+
+    game.BEGIN_ENEMIES.append(RunEnemy(-100, -100, width=100, height=100, speed=5, begin_time_run=40,
+                                       points=[(100 + i * 150, 150) if i % 2 == 0 else (100 + i * 150, 450) for i in range(10)], circle=True))
 
     game.BEGIN_POINTS.append(game.Point(200, 200))
     game.BEGIN_POINTS.append(game.Point(300, 300))
