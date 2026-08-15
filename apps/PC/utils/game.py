@@ -1,5 +1,4 @@
-import pygame, math, copy, time
-from rich import color
+import pygame, math, copy, time, enum
 
 """МОДУЛЬ ИГРА
 ОТВЕЧАЕТ ЗА ИГРОВОЙ ПРОЦЕСС
@@ -86,6 +85,19 @@ class Point(GameObject):
     """Очки на карте"""
     def __init__(self, x, y):
         super().__init__(x, y, "yellow", 50, 50, radius_circle=25)
+
+class GameEvent:
+    "Хранит функцию и время вызора"
+    def __init__(self, func, time_run : float|int, duration: int = None):
+        assert isinstance(time_run, (float, int))
+        self.time_run = time_run
+        self.func = func
+        self.duration = duration
+
+class Status(enum.Enum):
+    GAMEPLAY = "gameplay",
+    WINNER = "winner",
+    DEFEAT = "defeat"
 # endregion
 
 # region НАЧАЛЬНЫЕ НАСТРОЙКИ
@@ -128,6 +140,8 @@ WINNING_CONDITION_FUNCTION = None
 # region СТАТИСТИКА
 _times_key_downs = []
 _cps = 0
+_count_defeat = 0
+_status = Status.GAMEPLAY
 
 mood = 0.0
 # endregion
@@ -136,21 +150,21 @@ mood = 0.0
 # игрок
 player = GameRunObject(PLAYER_X, PLAYER_Y, color="gray", health=10, width=60, height=60)
 
-# стены (в мировых координатах, они не зависят от размера окна)
+# стены и враги
 walls = [
     pygame.Rect(100, 100, 1000, 20),     # Верхняя
     pygame.Rect(100, 580, 1000, 20),   # Нижняя
     pygame.Rect(100, 100, 20, 500),     # Левая
     pygame.Rect(1080, 100, 20, 500),   # Правая
 ]
-
-# враги
 BEGIN_ENEMIES = []
 _enemies = []
 
-# очки
+# очки и события
 BEGIN_POINTS = []
 _points = []
+events = []
+
 # endregion
 
 # region GAME METHODS
@@ -208,8 +222,8 @@ def control():
             break
 
 def game_logic():
-    """Игровая логика - взаомодействие с объектами"""
-    global mood
+    """Игровая логика - взаомодействие с объектами и события"""
+    global mood, events
     # Управление игрока
     control()
 
@@ -232,6 +246,15 @@ def game_logic():
                 player.color = "orange"
             else:
                 player.color = "yellow"
+
+    # Проверка и вызов событий
+    for event in events:
+        if game_time() >= event.time_run:
+            event.func()
+            if event.duration is None:
+                events.remove(event)
+            else:
+                event.time_run += event.duration
 
 def restart_game():
     """СБОР/СБРОС ИГРЫ"""
@@ -267,20 +290,20 @@ def winner_game():
 
 def defeat_game():
     """ПРОИГРЫШ"""
-    global _defeat_label_index, game_surface
+    global _defeat_label_index, game_surface, _status, _count_defeat
+    # Статистика
+    if not _status == Status.GAMEPLAY:
+        _status = Status.DEFEAT
+        _count_defeat += 1
     # Рисуем экран поражения на game_surface
     game_surface.fill((0, 0, 0))
     font = pygame.font.Font(None, 120)
-
-    # Сообщение игроку
     label = DEFEAT_LABEL[_defeat_label_index]
     text = font.render(label, True, (255, 0, 0))
     game_surface.blit(text, (_GAME_WIDTH // 2 - text.get_width() // 2, _GAME_HEIGHT // 2 - 50))
-
     restart_text = pygame.font.Font(None, 40).render("Нажмите R для перезапуска", True, (255, 255, 255))
     game_surface.blit(restart_text,
                       (_GAME_WIDTH // 2 - restart_text.get_width() // 2, _GAME_HEIGHT // 2 + 50))
-
     # Обработка перезапуска
     keys = pygame.key.get_pressed()
     if keys[pygame.K_r]:
@@ -341,14 +364,6 @@ def restart_screen():
         screen_height = _WINDOW_HEIGHT
         screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 
-def status() -> str:
-    global _running_game, WINNING_CONDITION_FUNCTION
-    if player.health <= 0:
-        return "defeat"
-    elif WINNING_CONDITION_FUNCTION():
-        return "winner"
-    else:
-        return "gameplay"
 # endregion
 
 """ЗАПУСК ИГРЫ"""

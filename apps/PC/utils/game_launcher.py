@@ -41,7 +41,7 @@ def collect_data_mood(session_id: int, snapshots: list, duration: float):
             frequency_key_down = game._cps
             health = game.player.health
             snapshot = GameSnapshotV1(session_id = session_id, emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health, enemy_distance=get_enemy_distance(),
-                                      status = game.status())
+                                      status = game._status)
             snapshots.append(snapshot)
 
             time.sleep(duration)
@@ -71,7 +71,8 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
     """
     assert isinstance(snapshots, list), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     assert isinstance(session_id, int), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
-    # defeat and winner game settings
+
+    # region Settings
     game.DEFEAT_LABEL = [
         "Первая ошибка",
         "Вторая ошибка",
@@ -81,9 +82,9 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 5
-
-    # enemy
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 60
+    # endregion
+    # region Enemies
     game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=5, begin_time_run=15, points=(
         # круг 1
         (850, 150),
@@ -107,25 +108,31 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
         #уходит
         (1500, 150),
     ), circle=False))
-
     game.BEGIN_ENEMIES.append(RunEnemy(-100, -100, width=100, height=100, speed=5, begin_time_run=40,
                                        points=[(100 + i * 150, 150) if i % 2 == 0 else (100 + i * 150, 450) for i in range(10)], circle=True))
-
+    # endregion
+    # region Points
     game.BEGIN_POINTS.append(game.Point(200, 200))
     game.BEGIN_POINTS.append(game.Point(300, 300))
     game.BEGIN_POINTS.append(game.Point(700, 500))
     game.BEGIN_POINTS.append(game.Point(900, 200))
-
+    # endregion
+    def change_speed_enemies():
+        if game._count_defeat < 2:
+            game._enemies[0].speed += 10
+        elif game._count_defeat < 4:
+            game._enemies[0].speed += 5
+    game.events.append(game.GameEvent(change_speed_enemies, 30, 10))
+    # region Other
     # player
     game.PLAYER_X = 500
     game.PLAYER_Y = 500
-
     # snapshots run
     if duration_snapshots is not None:
         collect_data_mood(session_id, snapshots, duration_snapshots)
-
     # run game
     game.run()
+    # endregion
 
 """ ТЕСТ """
 if __name__ == '__main__':
