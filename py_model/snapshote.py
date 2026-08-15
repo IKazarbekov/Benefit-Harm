@@ -12,3 +12,5 @@ class GameSnapshotV1(Base):
     game_different = Column(Integer)
     health = Column(Integer)
     time = Column(DateTime, default=datetime.now)
+    enemy_distance = Column(Integer)
+    status = Column(String)

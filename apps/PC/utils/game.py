@@ -261,6 +261,8 @@ def winner_game():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_r]:
         pygame.quit()
+        _running_game = False
+
 
 def defeat_game():
     """ПРОИГРЫШ"""
@@ -289,6 +291,35 @@ def defeat_game():
         # restart game data
         restart_game()
 
+# Служебные методы
+
+def distance_between_rects(rect1: pygame.Rect, rect2: pygame.Rect) -> float:
+    """
+    Вычисляет расстояние между двумя прямоугольниками по ближайшим краям
+    (по осям X и Y, возвращает евклидово расстояние).
+    """
+    assert isinstance(rect1, pygame.Rect)
+    assert isinstance(rect2, pygame.Rect)
+    # Расстояние по оси X (между ближайшими краями)
+    if rect1.right < rect2.left:
+        dx = rect2.left - rect1.right
+    elif rect2.right < rect1.left:
+        dx = rect1.left - rect2.right
+    else:
+        dx = 0  # Проекции перекрываются по X
+
+    # Расстояние по оси Y (между ближайшими краями)
+    if rect1.bottom < rect2.top:
+        dy = rect2.top - rect1.bottom
+    elif rect2.bottom < rect1.top:
+        dy = rect1.top - rect2.bottom
+    else:
+        dy = 0  # Проекции перекрываются по Y
+
+    # Евклидово расстояние
+    import math
+    return math.hypot(dx, dy)
+
 def game_time():
     """СЛУЖЕБНЫЕ ФУНКЦИИ"""
     current_time = time.time()
@@ -308,6 +339,15 @@ def restart_screen():
         screen_width = _WINDOW_WIDTH
         screen_height = _WINDOW_HEIGHT
         screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+
+def status() -> str:
+    global _running_game, WINNING_CONDITION_FUNCTION
+    if player.health <= 0:
+        return "defeat"
+    elif WINNING_CONDITION_FUNCTION():
+        return "winner"
+    else:
+        return "gameplay"
 # endregion
 
 """ЗАПУСК ИГРЫ"""
@@ -354,7 +394,6 @@ def run():
             defeat_game()
         elif WINNING_CONDITION_FUNCTION():
             winner_game()
-            _running_game = False
         else:
             game_logic()
             draw(game_surface)

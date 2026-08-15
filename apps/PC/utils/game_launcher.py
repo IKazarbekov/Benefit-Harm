@@ -1,6 +1,5 @@
-import threading, time
+import threading, time, cv2
 from apps.PC.utils.game import RunEnemy
-from py_model.session import Session
 from py_model.snapshote import GameSnapshotV1
 from apps.PC.utils import game
 
@@ -12,7 +11,7 @@ from apps.PC.utils import game
 snapshots = []
 
 """ ДОП МЕТОДЫ """
-def collect_data_mood(session_id: int, snapshots: list, duration: int):
+def collect_data_mood(session_id: int, snapshots: list, duration: float):
     """Берёт данные настроения, частоты нажатия клавиш и записывает к студенту
     :param session: Session
     :param duration: int
@@ -20,21 +19,33 @@ def collect_data_mood(session_id: int, snapshots: list, duration: int):
     """
     assert isinstance(session_id, int), "Неверный тип параметра снимков введён в функцию collect_data_mood()"
     assert isinstance(snapshots, list), "Неверный тип параметра снимков введён в функцию collect_data_mood()"
-    assert isinstance(duration, int), "Неверный тип параметра интервала записи введён в функцию collect_data_mood()"
+    assert isinstance(duration, float), "Неверный тип параметра интервала записи введён в функцию collect_data_mood()"
     assert duration > 0, "Неверное значение параметра интервала записи введён в функцию collect_data_mood()"
 
+    def get_enemy_distance() -> int:
+        player_rect = game.player.rect
+        summa = 0
+        for enemy in game._enemies:
+            enemy_rect = enemy.rect
+            distance = game.distance_between_rects(player_rect, enemy_rect)
+            summa += distance
+        return summa
+
     from ml_model.face.fast_deepface import get_mood
+    camera = cv2.VideoCapture(0)
     is_running = True
     def snapshot():
         while game._running_game:
-            emotion = get_mood()
+            emotion = get_mood(camera)
             difficulty = get_difficulty()
             frequency_key_down = game._cps
             health = game.player.health
-            snapshot = GameSnapshotV1(session_id = session_id, emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health)
+            snapshot = GameSnapshotV1(session_id = session_id, emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health, enemy_distance=get_enemy_distance(),
+                                      status = game.status())
             snapshots.append(snapshot)
 
             time.sleep(duration)
+        camera.release()
 
     thread = threading.Thread(target=snapshot)
     thread.start()
@@ -51,7 +62,7 @@ def get_difficulty() -> int:
     return summa
 
 """ СЦЕНАРИИ ИГР """
-def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: int) -> None:
+def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: float) -> None:
     """
     Модуль игры - учимся на ошибках. Заучивание на ошибках от поведения враждебных объектов
     :param session: сеанс студента
@@ -60,6 +71,7 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: in
     """
     assert isinstance(snapshots, list), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     assert isinstance(session_id, int), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
+    assert isinstance(duration_snapshots, float), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     # defeat and winner game settings
     game.DEFEAT_LABEL = [
         "Первая ошибка",
@@ -70,7 +82,7 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: in
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 2
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 20
 
     # enemy
     game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=15, begin_time_run=5, points=(
