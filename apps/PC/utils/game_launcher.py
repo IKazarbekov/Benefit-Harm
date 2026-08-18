@@ -1,4 +1,5 @@
 import threading, time, cv2
+from datetime import datetime
 from apps.PC.utils.game import RunEnemy
 from py_model.snapshote import GameSnapshotV1
 from apps.PC.utils import game
@@ -41,7 +42,7 @@ def collect_data_mood(session_id: int, snapshots: list, duration: float):
             frequency_key_down = game._cps
             health = game.player.health
             snapshot = GameSnapshotV1(session_id = session_id, emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health, enemy_distance=get_enemy_distance(),
-                                      status = game._status)
+                                      status = game._status, count_defeat=game._count_defeat, time=datetime.now())
             snapshots.append(snapshot)
 
             time.sleep(duration)
@@ -84,45 +85,14 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
     game.DEFEAT_LABEL_REPEAT = False
     game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 60
     # endregion
-    # region Enemies
-    game.BEGIN_ENEMIES.append(RunEnemy(800, -400, width=200, height=200, speed=5, begin_time_run=15, points=(
-        # круг 1
-        (850, 150),
-        (150, 150),
-        (150, 350),
-        (850, 350),
-        # круг 2
-        (850, 150),
-        (150, 150),
-        (150, 350),
-        (850, 350),
-        # диагональ
-        (150, 150),
-        (150, 350),
-        (850, 350),
-        # круг 1
-        (850, 150),
-        (150, 150),
-        (150, 350),
-        (850, 350),
-        #уходит
-        (1500, 150),
-    ), circle=False))
-    game.BEGIN_ENEMIES.append(RunEnemy(-100, -100, width=100, height=100, speed=5, begin_time_run=40,
-                                       points=[(100 + i * 150, 150) if i % 2 == 0 else (100 + i * 150, 450) for i in range(10)], circle=True))
+    # region Events
+    def begin():
+        game.add_object(game.Wall(300, 300, "white", 200, 200))
+        game.add_object(game.Point(100, 200))
+        game.add_object(game.Point(300, 200))
+        game.add_object(game.Point(600, 200))
+    game.add_event(game.GameEvent(begin, 0))
     # endregion
-    # region Points
-    game.BEGIN_POINTS.append(game.Point(200, 200))
-    game.BEGIN_POINTS.append(game.Point(300, 300))
-    game.BEGIN_POINTS.append(game.Point(700, 500))
-    game.BEGIN_POINTS.append(game.Point(900, 200))
-    # endregion
-    def change_speed_enemies():
-        if game._count_defeat < 2:
-            game._enemies[0].speed += 10
-        elif game._count_defeat < 4:
-            game._enemies[0].speed += 5
-    game.events.append(game.GameEvent(change_speed_enemies, 30, 10))
     # region Other
     # player
     game.PLAYER_X = 500

@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum as SAEnum
 from core.base import Base
 from datetime import datetime
+from py_model.game_status import Status
 
 class GameSnapshotV1(Base):
     __tablename__ = 'game_snapshots_v1'
@@ -13,4 +14,5 @@ class GameSnapshotV1(Base):
     health = Column(Integer)
     time = Column(DateTime, default=datetime.now)
     enemy_distance = Column(Integer)
-    status = Column(String)
+    status = Column(SAEnum(Status))
+    count_defeat = Column(Integer)
