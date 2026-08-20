@@ -1,8 +1,7 @@
 import threading, time, cv2
 from datetime import datetime
-from apps.PC.utils.game import RunEnemy
 from py_model.snapshote import GameSnapshotV1
-from apps.PC.utils import game
+from game import game
 
 """
 ЗАПУСКАЕТ ИГРЫ, ХРАНИТ В СЕБЕ ВСЕ СЦЕНАРИИ
@@ -63,7 +62,7 @@ def get_difficulty() -> int:
     return summa
 
 """ СЦЕНАРИИ ИГР """
-def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: float) -> None:
+def modul_one(session_id: int, snapshots: list, duration_snapshots: float) -> None:
     """
     Модуль игры - учимся на ошибках. Заучивание на ошибках от поведения враждебных объектов
     :param session: сеанс студента
@@ -72,7 +71,6 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
     """
     assert isinstance(snapshots, list), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
     assert isinstance(session_id, int), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
-
     # region Settings
     game.DEFEAT_LABEL = [
         "Первая ошибка",
@@ -104,6 +102,75 @@ def modul_my_errors_run(session_id: int, snapshots: list, duration_snapshots: fl
     game.run()
     # endregion
 
+def modul_two(session_id: int, snapshots: list, duration_snapshots: float) -> None:
+    """
+    Модуль игры - учимся на ошибках. Заучивание на ошибках от поведения враждебных объектов
+    :param session: сеанс студента
+    :param duration_snapshots: интервал записи снимков во время игры, если None то запись отключена
+    :return: None
+    """
+    assert isinstance(snapshots, list), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
+    assert isinstance(session_id, int), "Неверный тип параметра сеанса введён в функцию collect_data_mood()"
+    # region Settings
+    game.DEFEAT_LABEL = [
+        "Первая ошибка",
+        "Вторая ошибка",
+        "Ошибки разные?",
+        "Анализируй",
+        "Пробуй другие пути",
+        "И ты исправишь ошибку"
+    ]
+    game.DEFEAT_LABEL_REPEAT = False
+    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 60
+    # endregion
+    # region Objects
+    begin_objects = [
+        game.Wall(300, 300, "white", 200, 200),
+        game.Point(100, 200),
+        game.Point(300, 200),
+        game.Point(600, 200)
+    ]
+    big_enemy = game.RunEnemy(800, -400, width=200, height=200, speed=5, begin_time_run=15, points=(
+        # круг 1
+        (850, 150),
+        (150, 150),
+        (150, 350),
+        (850, 350),
+        # круг 2
+        (850, 150),
+        (150, 150),
+        (150, 350),
+        (850, 350),
+        # диагональ
+        (150, 150),
+        (150, 350),
+        (850, 350),
+        # круг 1
+        (850, 150),
+        (150, 150),
+        (150, 350),
+        (850, 350),
+        #уходит
+        (1500, 150),
+    ), circle=False)
+    small_enemy = game.RunEnemy(-100, -100, width=100, height=100, speed=5, begin_time_run=40,
+                                       points=[(100 + i * 150, 150) if i % 2 == 0 else (100 + i * 150, 450) for i in range(10)], circle=True)
+    # endregion
+    # region Events
+    game.add_event(game.GameEvent(lambda: game.add_objects(begin_objects), 0))
+    game.add_event(game.GameEvent(lambda: game.add_object(big_enemy), 5))
+    # endregion
+    # region Other
+    # player
+    game.PLAYER_X = 500
+    game.PLAYER_Y = 500
+    # snapshots run
+    if duration_snapshots is not None:
+        collect_data_mood(session_id, snapshots, duration_snapshots)
+    # run game
+    game.run()
+    # endregion
+
 """ ТЕСТ """
 if __name__ == '__main__':
-    modul_my_errors_run(1, [], None)
+    modul_two(1, [], None)

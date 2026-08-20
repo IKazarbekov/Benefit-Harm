@@ -1,7 +1,8 @@
-#python 3.13.9
+#python 3.10
 # ui
 pyqt6==6.11.0
 pygame-ce==2.5.7
+easypygamewidgets==26.22
 
 # temp
 insightface==1.0.1

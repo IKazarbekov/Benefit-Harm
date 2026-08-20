@@ -1,15 +1,11 @@
 import sys, functools
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel, QTabWidget, \
-    QStackedWidget, QStackedLayout, QFormLayout, QLineEdit, QSpinBox, QComboBox, QTableWidget, QTableWidgetItem, \
-    QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel, QStackedLayout, QFormLayout, QLineEdit, QSpinBox, QComboBox, QTableWidget
 from py_model.session import Session
 from py_model.student import Student
 from py_model.dto.student import Student as DTOStudent
 from apps.PC.utils import database, dto_mapper
-from utils import game_launcher
+import game_launcher
 from datetime import datetime
-from utils.game_launcher import snapshots
 
 
 class StartWindow(QMainWindow):
@@ -139,7 +135,7 @@ class StartWindow(QMainWindow):
         snapshots = []
 
         # gameplay
-        game_launcher.modul_my_errors_run(session.id, snapshots, 0.2)
+        game_launcher.modul_one(session.id, snapshots, 0.2)
 
         # end data
         session.end_time = datetime.now()

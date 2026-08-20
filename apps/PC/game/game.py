@@ -1,124 +1,20 @@
-from typing import Callable
-import pygame, math, time, dataclasses
+import pygame, time, easypygamewidgets as epw
 from py_model.game_status import Status
-
-"""МОДУЛЬ ИГРА
+from apps.PC.game.game_objects import RunEnemy, Point, Wall, GameRunObject, GameObject
+from apps.PC.game.game_event import GameEvent
+"""
+МОДУЛЬ ИГРА
 ОТВЕЧАЕТ ЗА ИГРОВОЙ ПРОЦЕСС
 """
-
-# region КЛАССЫ
-class GameObject:
-    """Отвечает за отрисовку"""
-    def __init__(self, x, y, color=(255, 0, 0), width = 100, height = 100, radius_circle = None):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.radius_circle = radius_circle
-        self.color = color
-
-    def draw(self, surface):
-        if self.radius_circle is not None:
-            pygame.draw.circle(surface, self.color, (self.rect.x, self.rect.y), self.radius_circle)
-        else:
-            pygame.draw.rect(surface, self.color, self.rect)
-
-class GameRunObject(GameObject):
-    """Отвечает за здоровье и скорость"""
-    def __init__(self, x, y, color=(255, 0, 0), health = 100, width = 100, height = 100, speed = 5):
-        super().__init__(x, y, color, width, height)
-        self.speed = speed
-        self.health = health
-
-class RunEnemy(GameRunObject):
-    """Автоматически движущийся объект что отнимает здоровье игроку"""
-    def __init__(self, x, y, color=(255, 0, 0), health=100, width=100, height=100, speed=5, points=None, begin_time_run = 0, removeInEnd: bool = True, circle:bool = False):
-        super().__init__(x, y, color=color, health=health, width=width, height=height, speed=speed)
-
-        # Список точек, по которым будет двигаться враг
-        self.points = points if points else []
-        self.current_point_index = 0  # Индекс текущей точки
-        self.rect.x = x
-        self.rect.y = y
-        self.circle = circle
-        self.removeInEnd = removeInEnd
-
-        self.begin_time_run = begin_time_run
-
-    def run(self):
-        # Если нет точек или не пришло время — не двигаемся
-        if not self.points or game_time() < self.begin_time_run:
-            return
-
-        # Если движение законченно
-        if self.current_point_index == len(self.points):
-            if self.circle:
-                self.current_point_index = 0
-            else:
-                if self.removeInEnd:
-                    _enemies.remove(self)
-                return
-
-        # Текущая целевая точка
-        target_x, target_y = self.points[self.current_point_index]
-
-        # Вектор от врага к цели
-        dx = target_x - self.rect.x
-        dy = target_y - self.rect.y
-        distance = math.hypot(dx, dy)
-
-        if distance < self.speed:
-            # Если почти достигли точки — переключаемся на следующую
-            self.rect.x = target_x
-            self.rect.y = target_y
-            self.current_point_index = (self.current_point_index + 1)
-        else:
-            # Двигаемся к цели с нормализацией вектора
-            self.rect.x += (dx / distance) * self.speed
-            self.rect.y += (dy / distance) * self.speed
-
-    def draw(self, surface):
-        # Можно нарисовать врага
-        pygame.draw.rect(surface, self.color, self.rect)
-
-        # Для отладки — нарисовать маршрут
-        if False and __debug__ and self.points:
-            for point in self.points:
-                pygame.draw.circle(surface, (255, 255, 0), (int(point[0]), int(point[1])), 5)
-
-class Point(GameObject):
-    """Очки на карте"""
-    def __init__(self, x, y):
-        super().__init__(x, y, "yellow", 50, 50, radius_circle=25)
-
-class Wall(GameObject):
-    """Отвечает за препятствие"""
-    """Доп. методов нет, только хранит данные"""
-    def __init__(self, x, y, color=(255, 0, 0), width = 100, height = 100, radius_circle = None):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.radius_circle = radius_circle
-        self.color = color
-        super().__init__(x, y, color, width, height, radius_circle)
-
-@dataclasses.dataclass
-class GameEvent:
-    func: Callable
-    time_run: float
-    duration: float = None
-    enable: bool = True
-
-# endregion
-
 # region НАЧАЛЬНЫЕ НАСТРОЙКИ
-# Размеры игрового мира (фиксированные)
+# Размеры игрового мира (фиксированные), размер окна (для оконного режима), Переменные для текущих размеров экрана
 _GAME_WIDTH = 1200
 _GAME_HEIGHT = 800
-
-# Начальный размер окна (для оконного режима)
 _WINDOW_WIDTH = 1024
 _WINDOW_HEIGHT = 768
-
-# Переменные для текущих размеров экрана
 screen_width = _WINDOW_WIDTH
 screen_height = _WINDOW_HEIGHT
-fullscreen = False  # начальный режим – оконный
+fullscreen = False
 
 # Создаём окно (в оконном режиме)
 screen = None
@@ -179,7 +75,7 @@ def _draw(surface):
     for wall in _walls:
         pygame.draw.rect(surface, (255, 255, 255), wall)
     for enemy in _enemies:
-        enemy._draw(surface)
+        enemy.draw(surface)
     for point in _points:
         point.draw(surface)
 
@@ -237,7 +133,8 @@ def _game_logic():
         if player.rect.colliderect(enemy.rect):
             player.health -= 10
             _enemies.remove(enemy)
-        enemy.run()
+        if enemy.run(game_time()):
+            _enemies.remove(enemy)
     for point in _points[:]:
         if player.rect.colliderect(point.rect):
             _points.remove(point)
@@ -295,10 +192,11 @@ def _winner_game():
 def _defeat_game():
     """ПРОИГРЫШ"""
     global _defeat_label_index, game_surface, _status, _count_defeat
-    # Статистика
+    # Statistic and one run
     if _status != Status.DEFEAT:
         _status = Status.DEFEAT
         _count_defeat += 1
+        epw.Button(text="Перезапуск").place(500, 500)
     # Рисуем экран поражения на game_surface
     game_surface.fill((0, 0, 0))
     font = pygame.font.Font(None, 120)
@@ -378,6 +276,11 @@ def add_object(obj: GameObject):
     elif isinstance(obj, Point):
         _points.append(obj)
 
+def add_objects(objects: list[GameObject]):
+    assert isinstance(objects, list)
+    for obj in objects:
+        add_object(obj)
+
 def add_event(event: GameEvent):
     assert isinstance(event, GameEvent)
     _events.append(event)
@@ -387,24 +290,25 @@ def add_event(event: GameEvent):
 def run():
     global screen_width, screen_height, fullscreen, screen, game_surface, _running_game, _times_key_downs, _cps
 
-    # Создаём окно (в оконном режиме)
+    # Init window
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
     game_surface = pygame.Surface((_GAME_WIDTH, _GAME_HEIGHT))
     pygame.display.set_caption("Benefit Harm")
     pygame.init()
+    epw.link_pygame_window(screen)
 
     assert WINNING_CONDITION_FUNCTION is not None, "Не выстовленно условие выигрыша игры, установите функцию возвращающую bool в WINNING_CONDITION_FUNCTION()"
 
     _restart_screen()
     _restart_game()
     while _running_game:
-        # --- Обработка событий ---
+        # region Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 _running_game = False
                 break
 
-            # Переключение полноэкранного режима по F11
+            # Window size
             if event.type == pygame.KEYDOWN:
                 # statistic cps (frequency key down)
                 now = time.time()
@@ -416,14 +320,16 @@ def run():
                 if event.key == pygame.K_F11:
                     fullscreen = not fullscreen
                     _restart_screen()
-
-            # Изменение размера окна (только в оконном режиме)
             if event.type == pygame.VIDEORESIZE and not fullscreen:
                 screen_width = event.w
                 screen_height = event.h
                 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 
-        # --- Проверка здоровья и условия выигрыша ---
+            # Library epw
+            epw.handle_event(event)
+        # endregion
+
+        # region Winner and defeat
         if player.health <= 0:
             _defeat_game()
         elif WINNING_CONDITION_FUNCTION():
@@ -431,9 +337,9 @@ def run():
         else:
             _game_logic()
             _draw(game_surface)
+        # endregion
 
-        # --- Масштабирование и вывод на экран ---
-        # Вычисляем масштаб с сохранением пропорций
+        # region Screen update
         scale_x = screen_width / _GAME_WIDTH
         scale_y = screen_height / _GAME_HEIGHT
         scale = min(scale_x, scale_y)
@@ -452,8 +358,12 @@ def run():
         screen.fill((0, 0, 0))
         screen.blit(scaled_surface, (offset_x, offset_y))
 
+        # Library epw
+        epw.flip()
+
         pygame.display.flip()
         clock.tick(FPS)
+        # endregion
 
     pygame.quit()
 
