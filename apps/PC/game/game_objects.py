@@ -1,4 +1,5 @@
 import pygame, math
+from typing import Callable
 
 class GameObject:
     """Отвечает за отрисовку"""
@@ -83,8 +84,9 @@ class RunEnemy(GameRunObject):
 
 class Point(GameObject):
     """Очки на карте"""
-    def __init__(self, x, y):
+    def __init__(self, x, y, assembled: Callable = lambda:None):
         super().__init__(x, y, "yellow", 50, 50, radius_circle=25)
+        self.assembled = assembled
 
 class Wall(GameObject):
     """Отвечает за препятствие"""

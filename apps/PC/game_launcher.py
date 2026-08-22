@@ -1,4 +1,4 @@
-import threading, time, cv2
+import threading, time, cv2, random as rnd
 from datetime import datetime
 from py_model.snapshote import GameSnapshotV1
 from game import game
@@ -36,11 +36,10 @@ def collect_data_mood(session_id: int, snapshots: list, duration: float):
     is_running = True
     def snapshot():
         while game._running_game:
-            emotion = get_mood(camera)
             difficulty = get_difficulty()
             frequency_key_down = game._cps
             health = game.player.health
-            snapshot = GameSnapshotV1(session_id = session_id, emotion=emotion, game_different=difficulty, frequency_key_down=frequency_key_down, health=health, enemy_distance=get_enemy_distance(),
+            snapshot = GameSnapshotV1(session_id = session_id, emotion=None, game_different=difficulty, frequency_key_down=frequency_key_down, health=health, enemy_distance=get_enemy_distance(),
                                       status = game._status, count_defeat=game._count_defeat, time=datetime.now())
             snapshots.append(snapshot)
 
@@ -121,16 +120,11 @@ def modul_two(session_id: int, snapshots: list, duration_snapshots: float) -> No
         "И ты исправишь ошибку"
     ]
     game.DEFEAT_LABEL_REPEAT = False
-    game.WINNING_CONDITION_FUNCTION = lambda: game.game_time() > 60
+    game.WINNING_CONDITION_FUNCTION = lambda: small_enemy.current_point_index == 9
     # endregion
     # region Objects
-    begin_objects = [
-        game.Wall(300, 300, "white", 200, 200),
-        game.Point(100, 200),
-        game.Point(300, 200),
-        game.Point(600, 200)
-    ]
-    big_enemy = game.RunEnemy(800, -400, width=200, height=200, speed=5, begin_time_run=15, points=(
+    number_stage = 0
+    big_enemy = game.RunEnemy(800, -400, width=200, height=200, speed=8, begin_time_run=15, points=(
         # круг 1
         (850, 150),
         (150, 150),
@@ -153,12 +147,23 @@ def modul_two(session_id: int, snapshots: list, duration_snapshots: float) -> No
         #уходит
         (1500, 150),
     ), circle=False)
-    small_enemy = game.RunEnemy(-100, -100, width=100, height=100, speed=5, begin_time_run=40,
+    small_enemy = game.RunEnemy(-100, -100, width=100, height=100, speed=8, begin_time_run=40,
                                        points=[(100 + i * 150, 150) if i % 2 == 0 else (100 + i * 150, 450) for i in range(10)], circle=True)
     # endregion
     # region Events
-    game.add_event(game.GameEvent(lambda: game.add_objects(begin_objects), 0))
-    game.add_event(game.GameEvent(lambda: game.add_object(big_enemy), 5))
+    def create_random_point():
+        nonlocal number_stage
+        number_stage += 1
+        if number_stage == 10:
+            if game._count_defeat <= 3:
+                big_enemy.speed = 8 - game._count_defeat * 2
+                small_enemy.speed = 8 - game._count_defeat * 2
+            game.add_object(big_enemy)
+            game.add_event(game.GameEvent(lambda: game.add_object(small_enemy), 20))
+            return
+        x, y = rnd.randrange(200, 1000), rnd.randrange(150, 500)
+        game.add_object(game.Point(x, y, create_random_point))
+    game.add_event(game.GameEvent(create_random_point, 0))
     # endregion
     # region Other
     # player

@@ -49,7 +49,7 @@ mood = 0.0
 # endregion
 
 # region ИГРОВЫЕ ОБЪЕКТЫ
-player = GameRunObject(PLAYER_X, PLAYER_Y, color="gray", health=10, width=60, height=60)
+player = None
 _walls = [
     Wall(100, 100,"white", 1000, 20),
     Wall(100, 580,"white", 1000, 20),
@@ -137,6 +137,7 @@ def _game_logic():
             _enemies.remove(enemy)
     for point in _points[:]:
         if player.rect.colliderect(point.rect):
+            point.assembled()
             _points.remove(point)
             mood += 0.3
             player.speed *= 1.2
@@ -160,10 +161,12 @@ def _restart_game():
     """СБОР/СБРОС ИГРЫ"""
     global _enemies, player, _begin_time, mood
     _begin_time = time.time()
-    player = GameRunObject(PLAYER_X, PLAYER_Y, color="gray", health=10, width=60, height=60)
+    player = GameRunObject(PLAYER_X, PLAYER_Y, color="gray", health=10, width=60, height=60, speed=1)
     mood = 0.0
     _enemies.clear()
     _points.clear()
+    for enemy in _enemies:
+        enemy.enable = True
 
 def _winner_game():
     """ПОБЕДА"""
@@ -196,7 +199,7 @@ def _defeat_game():
     if _status != Status.DEFEAT:
         _status = Status.DEFEAT
         _count_defeat += 1
-        epw.Button(text="Перезапуск").place(500, 500)
+        #epw.Button(text="Перезапуск").place(500, 500)
     # Рисуем экран поражения на game_surface
     game_surface.fill((0, 0, 0))
     font = pygame.font.Font(None, 120)
@@ -247,7 +250,8 @@ def distance_between_rects(rect1: pygame.Rect, rect2: pygame.Rect) -> float:
     return math.hypot(dx, dy)
 
 def game_time():
-    """СЛУЖЕБНЫЕ ФУНКЦИИ"""
+    if _begin_time is None:
+        return 0
     current_time = time.time()
     return current_time - _begin_time
 
@@ -282,7 +286,9 @@ def add_objects(objects: list[GameObject]):
         add_object(obj)
 
 def add_event(event: GameEvent):
+    """Метод меняет старт события от текущего времени игры"""
     assert isinstance(event, GameEvent)
+    event.time_run += game_time()
     _events.append(event)
 # endregion
 
