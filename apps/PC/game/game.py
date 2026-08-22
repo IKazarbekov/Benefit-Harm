@@ -16,6 +16,7 @@ screen_width = _WINDOW_WIDTH
 screen_height = _WINDOW_HEIGHT
 fullscreen = False
 
+
 # Создаём окно (в оконном режиме)
 screen = None
 game_surface = None
